@@ -1,8 +1,9 @@
 #!/bin/bash
-docker container run -d \
+docker container run -d --rm \
   -p 443:443 \
-  --rm \
+  -p 80:80 \
   -v $(pwd)/var/log:/var/log/nginx \
-  --name web \
-  --net network_dev \
+  -v $(pwd)/public:/usr/share/nginx/html:ro \
+  --name tokyomap-web \
+  --net network_tokyomap \
   tokyomap.web:dev

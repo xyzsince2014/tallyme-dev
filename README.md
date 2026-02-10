@@ -3,7 +3,7 @@
 <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/xyzsince2014/tokyomap-dev">
 <img alt="GitHub tag (latest by date)" src="https://img.shields.io/github/v/tag/xyzsince2014/tokyomap-dev">
 
-Dev tools for https://www.tokyomap.live
+Dev environment for https://www.tokyomap.live, accessible by https://localhost.
 
 ## How to dev
 ```bash
@@ -20,8 +20,14 @@ cd redis
 ./docker-run.sh
 
 # web
-## enable CloudFront dnkdutri932is.cloudfront.net beforehand
 cd web
+./sync-s3-dev.sh
 ./docker-build.sh
 ./docker-run.sh
+
+# run other docker containers
+## see
+## https://github.com/xyzsince2014/tokyomap-oauth
+## https://github.com/xyzsince2014/tokyomap-resource
+## https://github.com/xyzsince2014/tokyomap-app
 ```

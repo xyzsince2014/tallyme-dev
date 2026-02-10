@@ -3,3 +3,5 @@
 /postgres/var/
 
 /web/var/log
+/web/certs/*.pem
+/web/public
