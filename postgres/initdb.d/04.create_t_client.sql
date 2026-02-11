@@ -1,4 +1,4 @@
-create table if not exists t_client (
+create table if not exists oauth.t_client (
   client_id character varying(256) primary key
   , client_secret character varying(256)
   , client_name character varying(256)
@@ -7,7 +7,7 @@ create table if not exists t_client (
   , redirect_uris character varying(256) not null
   , grant_types character varying(256) not null
   , response_types character varying(256) not null
-  , scopes character varying(256) not null
+  , scope character varying(256) not null
   , registration_access_token character varying(256) not null
   , registration_client_uri character varying(256) not null
   , expires_at timestamp not null

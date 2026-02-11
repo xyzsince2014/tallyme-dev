@@ -1,4 +1,4 @@
-create table if not exists t_tweet (
+create table if not exists public.t_tweet (
   tweet_id bigserial primary key
   , sub character varying(128) not null
   , message character varying(255) not null
@@ -8,4 +8,5 @@ create table if not exists t_tweet (
   , created_at timestamp not null
   , updated_at timestamp not null
 );
-alter table t_tweet add foreign key (sub) references t_usr (sub) on delete cascade;
+
+create index if not exists idx_t_tweet_sub on public.t_tweet (sub);
