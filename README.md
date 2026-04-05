@@ -22,6 +22,8 @@ cd redis
 # web
 cd web
 ./sync-s3-dev.sh
+# Generate self-signed SSL certs for localhost HTTPS (required before building the image)
+./certs/certbot.sh
 ./docker-build.sh
 ./docker-run.sh
 
