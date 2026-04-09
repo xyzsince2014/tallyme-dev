@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tokyomap-oauth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tokyomap-oauth
+  template:
+    metadata:
+      labels:
+        app: tokyomap-oauth
+    spec:
+      enableServiceLinks: false
+      containers:
+      - name: oauth-container
+        image: tokyomap-oauth:dev
+        # Use local image built inside Minikube
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        env:
+        - name: TZ
+          value: "Asia/Tokyo"
+        # Tomcat specific options
+        - name: CATALINA_OPTS
+          value: "-Duser.timezone=Asia/Tokyo"

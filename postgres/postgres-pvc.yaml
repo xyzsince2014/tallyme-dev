@@ -1,0 +1,14 @@
+# ============================================================================
+# STORAGE RESERVATION (PersistentVolumeClaim)
+# ============================================================================
+# This ensures that your database data survives even if the Pod is deleted.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce # Only one node can write to this disk at a time
+  resources:
+    requests:
+      storage: 1Gi # Requesting 1GB of persistent storage

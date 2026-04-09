@@ -5,31 +5,39 @@
 
 Dev environment for https://www.tokyomap.live, accessible by https://localhost.
 
-## How to dev
+## Prerequisites
+
+- [Minikube](https://minikube.sigs.k8s.io/)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/)
+- Docker
+
+## Make commands
+
+| Command | Description |
+|---------|-------------|
+| `make up` | Full setup: start Minikube, build images, and deploy all resources |
+| `make setup` | Start Minikube with the Docker driver, enable the Ingress addon, and open a `minikube tunnel` window |
+| `make build` | Build the Postgres Docker image inside the Minikube environment |
+| `make deploy` | Apply all Kubernetes manifests (Postgres, Redis, AS, RS) |
+| `make stop` | Stop the Minikube cluster |
+| `make delete` | Delete the Minikube cluster (prompts for confirmation) |
+| `make psql` | Open a psql session against the in-cluster Postgres database |
+
+## Quick start
+
 ```bash
-# docker network
-./docker-create-network.sh
+# Bring up the entire dev environment
+make up
 
-# postgres
-cd postgres
-./docker-build.sh
-./docker-run.sh
+# Stop the cluster (keeps all data/config)
+make stop
 
-# redis
-cd redis
-./docker-run.sh
-
-# web
-cd web
-./sync-s3-dev.sh
-# Generate self-signed SSL certs for localhost HTTPS (required before building the image)
-./certs/certbot.sh
-./docker-build.sh
-./docker-run.sh
-
-# run other docker containers
-## see
-## https://github.com/xyzsince2014/tokyomap-oauth
-## https://github.com/xyzsince2014/tokyomap-resource
-## https://github.com/xyzsince2014/tokyomap-app
+# Destroy the cluster entirely
+make delete
 ```
+
+## Related repositories
+
+- https://github.com/xyzsince2014/tokyomap-oauth
+- https://github.com/xyzsince2014/tokyomap-resource
+- https://github.com/xyzsince2014/tokyomap-app

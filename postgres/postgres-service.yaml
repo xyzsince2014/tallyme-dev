@@ -1,0 +1,15 @@
+# ============================================================================
+# NETWORK ENDPOINT (Service)
+# ============================================================================
+# Provides a stable DNS name "postgres" so other apps can find the DB
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432 # External port for the cluster
+      targetPort: 5432 # Internal port on the container

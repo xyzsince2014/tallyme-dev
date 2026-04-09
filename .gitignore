@@ -1,7 +1,1 @@
-/redis/data
-
-/postgres/var/
-
-/web/var/log
-/web/certs/*.pem
-/web/public
+.DS_Store

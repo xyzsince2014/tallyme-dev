@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tokyomap-resource
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tokyomap-resource
+  template:
+    metadata:
+      labels:
+        app: tokyomap-resource
+    spec:
+      enableServiceLinks: false
+      containers:
+      - name: resource-container
+        image: tokyomap-resource:dev
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8081
+        env:
+        - name: PORT
+          value: "8081"
+        - name: AS_DOMAIN
+          value: "http://tokyomap-oauth-service:8080"
+        - name: RS_ID
+          value: "tokyomap-resource-dev"
+        - name: RS_SECRET
+          value: "fuga"
+        - name: RS_DOMAIN
+          value: "https://rs.localhost"
+        - name: DB_HOST
+          value: "postgres"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_DATABASE
+          value: "oauth"
+        - name: DB_SCHEMA
+          value: "public"
+        - name: DB_USER
+          value: "oauth_user"
+        - name: DB_PASSWORD
+          value: "oauth_password"
