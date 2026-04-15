@@ -7,7 +7,7 @@
 # Automatically finds the active Postgres Pod and connects via psql.
 # ============================================================================
 
-DB_DATABASE="oauth"
+DB_DATABASE="tallyme"
 DB_USER="postgres"
 
 # fetch the pod's name with label 'app=postgres'

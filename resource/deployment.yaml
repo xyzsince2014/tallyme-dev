@@ -1,44 +1,44 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tokyomap-resource
+  name: tallyme-resource
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tokyomap-resource
+      app: tallyme-resource
   template:
     metadata:
       labels:
-        app: tokyomap-resource
+        app: tallyme-resource
     spec:
       enableServiceLinks: false
       containers:
-      - name: resource-container
-        image: tokyomap-resource:dev
+      - name: tallyme-resource
+        image: tallyme-resource:dev
         imagePullPolicy: Never
         ports:
         - containerPort: 8081
         env:
         - name: PORT
           value: "8081"
-        - name: AS_DOMAIN
-          value: "http://tokyomap-oauth-service:8080"
-        - name: RS_ID
-          value: "tokyomap-resource-dev"
-        - name: RS_SECRET
-          value: "fuga"
-        - name: RS_DOMAIN
-          value: "https://rs.localhost"
+        - name: IDP_SERVICE
+          value: "http://tallyme-idp-service:8080"
+        - name: RESOURCE_DOMAIN
+          value: "https://tallyme-resource.localhost"
+        - name: RESOURCE_ID
+          value: "resource_dev"
+        - name: RESOURCE_SECRET
+          value: "resource_secret"
         - name: DB_HOST
           value: "postgres"
         - name: DB_PORT
           value: "5432"
         - name: DB_DATABASE
-          value: "oauth"
+          value: "tallyme"
         - name: DB_SCHEMA
           value: "public"
         - name: DB_USER
-          value: "oauth_user"
+          value: "dev_user"
         - name: DB_PASSWORD
-          value: "oauth_password"
+          value: "dev_password"

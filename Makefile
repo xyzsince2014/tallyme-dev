@@ -1,9 +1,4 @@
 # ============================================================================
-# Variables: Define image names and tags for consistency
-# ============================================================================
-IMAGE_POSTGRES = oauth.postgres:dev
-
-# ============================================================================
 # .PHONY: Declare targets not associated with files
 # ============================================================================
 .PHONY: setup build deploy up stop delete psql
@@ -35,20 +30,15 @@ setup:
 # ****** Build & Deploy ******
 # Execute Docker build inside the Minikube environment
 build:
-	eval $$(minikube docker-env) && \
-	docker build -t $(IMAGE_POSTGRES) ./postgres
+	./postgres/docker-build.sh
 
 # Provision k8s resources
-## postgres
-## redis
-## AS
-## RS
 deploy:
 	./postgres/create-configmap.sh
 	kubectl apply -f ./postgres/
 	kubectl apply -f ./redis/
-	kubectl apply -f ./as/
-	kubectl apply -f ./rs/
+	kubectl apply -f ./idp/
+	kubectl apply -f ./resource/
 
 # ****** Orchestrate ******
 up: setup build deploy

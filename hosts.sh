@@ -3,20 +3,20 @@
 # ============================================================================
 # Local Domain Resolution Setup
 # ============================================================================
-# This script ensures that local microservice domains point to the loopback IP.
-# - as.localhost: AS
-# - rs.localhost: RS
-# - tokyomap.localhost: Frontend & BFF
+# Ensures that local microservice domains point to the loopback IP.
+# * tallyme-idp.localhost
+# * tallyme-resource.localhost
+# * tokyomap.localhost: Frontend & BFF
 # ============================================================================
 
 HOSTS_FILE="/etc/hosts"
 
-# as.localhost -> 127.0.0.1 -> minikube tunnel -> Ingress Controller
-# rs.localhost -> 127.0.0.1 -> minikube tunnel -> Ingress Controller
+# tallyme-idp.localhost -> 127.0.0.1 -> minikube tunnel -> Ingress Controller
+# tallyme-resource.localhost -> 127.0.0.1 -> minikube tunnel -> Ingress Controller
 # tokyomap.localhost -> 127.0.0.1 -> localhost:3000
-DOMAIN_LINE="127.0.0.1 as.localhost rs.localhost tokyomap.localhost"
+DOMAIN_LINE="127.0.0.1 tallyme-idp.localhost tallyme-resource.localhost tokyomap.localhost"
 
-if grep -q "as.localhost" "$HOSTS_FILE"; then
+if grep -q "tallyme-idp.localhost" "$HOSTS_FILE"; then
     echo "Hosts entry already exists. Skipping..."
 else
     echo "Appending entries to $HOSTS_FILE..."

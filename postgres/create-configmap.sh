@@ -8,6 +8,9 @@
 # - These scripts are automatically executed during the PostgreSQL container's initialization phase via the /docker-entrypoint-initdb.d volume.
 # ============================================================================
 
+# common defensive idiom
+set -euo pipefail
+
 # $0 means where the script lives
 # dirname <path> return the directory of <path>
 # $(<cmd>) return the stdout of <cmd>

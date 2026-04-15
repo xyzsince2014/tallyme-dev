@@ -1,23 +1,24 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: oauth-ingress
+  name: tallyme-idp-ingress
   annotations:
-    # Force HTTP requests to redirect to HTTPS
+    # force http requests to redirect to https
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
-  # Enable HTTPS (TLS) for the specified host using Minikube's fake certificate
+  # enable https for the specified host using Minikube's fake certificate
   tls:
   - hosts:
-    - as.localhost
+    - tallyme-idp.localhost
   rules:
-  - host: as.localhost
+  - host: tallyme-idp.localhost
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
+          # service's name
           service:
-            name: tokyomap-oauth-service
+            name: tallyme-idp-service
             port:
               number: 8080

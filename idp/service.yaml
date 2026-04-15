@@ -1,10 +1,12 @@
 apiVersion: v1
 kind: Service
+# service's name
 metadata:
-  name: tokyomap-oauth-service
+  name: tallyme-idp-service
 spec:
   selector:
-    app: tokyomap-oauth
+    # deployment's name
+    app: tallyme-idp
   ports:
     - protocol: TCP
       port: 8080
