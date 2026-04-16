@@ -17,7 +17,7 @@ create table if not exists t_usr (
   , address character varying(256)
   , phone character varying(256)
   , phone_number_verified boolean not null default false
-  , scopes character varying(256)
+  , scope character varying(256)
   , role character varying(16) not null default 'USER'
   , created_at timestamp without time zone not null default current_timestamp
   , updated_at timestamp without time zone not null default current_timestamp

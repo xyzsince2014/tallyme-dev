@@ -1,27 +1,46 @@
-# tokyomap-dev
+# infra-dev
 
-<img alt="GitHub top language" src="https://img.shields.io/github/languages/top/xyzsince2014/tokyomap-dev">
-<img alt="GitHub tag (latest by date)" src="https://img.shields.io/github/v/tag/xyzsince2014/tokyomap-dev">
+<img alt="GitHub top language" src="https://img.shields.io/github/languages/top/xyzsince2014/infra-dev">
+<img alt="GitHub tag (latest by date)" src="https://img.shields.io/github/v/tag/xyzsince2014/infra-dev">
 
-Dev tools for https://www.tokyomap.live
+Dev environment for
+- https://idp.tallyme.xyz (accessible by https://tallyme-idp.localhost)
+- https://resource.tallyme.xyz (accessible by https://tallyme-resource.localhost)
+- https://www.tokyomap.live (accessible by http://localhost:3000)
 
-## How to dev
+## Prerequisites
+
+- [Minikube](https://minikube.sigs.k8s.io/)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/)
+- Docker
+
+## Make commands
+
+| Command | Description |
+|---------|-------------|
+| `make up` | Full setup: start Minikube, build images, and deploy all resources |
+| `make setup` | Start Minikube with the Docker driver, enable the Ingress addon, and open a `minikube tunnel` window |
+| `make build` | Build the Postgres Docker image inside the Minikube environment |
+| `make deploy` | Apply all Kubernetes manifests (Postgres, Redis, IdP, Resource) |
+| `make stop` | Stop the Minikube cluster |
+| `make delete` | Delete the Minikube cluster |
+| `make psql` | Open a psql session against the in-cluster Postgres |
+
+## Quick start
+
 ```bash
-# docker network
-./docker-create-network.sh
+# Bring up the entire dev environment
+make up
 
-# postgres
-cd postgres
-./docker-build.sh
-./docker-run.sh
+# Stop the cluster (keeps all data/config)
+make stop
 
-# redis
-cd redis
-./docker-run.sh
-
-# web
-## enable CloudFront dnkdutri932is.cloudfront.net beforehand
-cd web
-./docker-build.sh
-./docker-run.sh
+# Destroy the cluster entirely
+make delete
 ```
+
+## Related repositories
+
+- https://github.com/xyzsince2014/tallyme-idp
+- https://github.com/xyzsince2014/tallyme-resource
+- https://github.com/xyzsince2014/tokyomap-app

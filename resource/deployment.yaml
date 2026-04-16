@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tallyme-resource
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tallyme-resource
+  template:
+    metadata:
+      labels:
+        app: tallyme-resource
+    spec:
+      enableServiceLinks: false
+      containers:
+      - name: tallyme-resource
+        image: tallyme-resource:dev
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8081
+        env:
+        - name: PORT
+          value: "8081"
+        - name: IDP_SERVICE
+          value: "http://tallyme-idp-service:8080"
+        - name: RESOURCE_DOMAIN
+          value: "https://tallyme-resource.localhost"
+        - name: RESOURCE_ID
+          value: "resource_dev"
+        - name: RESOURCE_SECRET
+          value: "resource_secret"
+        - name: DB_HOST
+          value: "postgres"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_DATABASE
+          value: "tallyme"
+        - name: DB_SCHEMA
+          value: "public"
+        - name: DB_USER
+          value: "dev_user"
+        - name: DB_PASSWORD
+          value: "dev_password"

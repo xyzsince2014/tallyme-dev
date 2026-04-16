@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      enableServiceLinks: false
+      containers:
+      - name: postgres
+        image: tallyme-postgres:dev
+        imagePullPolicy: Never 
+        ports:
+        - containerPort: 5432
+        # runtime configuration (overrides Dockerfile defaults)
+        env:
+        - name: POSTGRES_DB
+          value: "tallyme"
+        - name: POSTGRES_PASSWORD
+          value: "postgres"
+        # mapping internal paths to external volumes
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data # where Postgres saves data
+        - name: init-scripts
+          mountPath: /docker-entrypoint-initdb.d # where initialization SQLs go
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc # connect to the "Storage Reservation" above
+      - name: init-scripts
+        configMap:
+          name: postgres-init-sql # connect to the ConfigMap containing your SQLs

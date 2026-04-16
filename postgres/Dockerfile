@@ -1,9 +1,5 @@
 FROM postgres:14
 
-ENV POSTGRES_DB='postgres'
-ENV POSTGRES_USER='postgres'
-ENV POSTGRES_PASSWORD='postgres'
-ENV POSTGRES_INITDB_ARGS="--encoding='UTF-8'"
 ENV TZ='Asia/Tokyo'
 
 EXPOSE 5432

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+# deplyment's name
+metadata:
+  name: tallyme-idp
+spec:
+  replicas: 1
+  selector:
+    # target the deployment manages
+    matchLabels:
+      app: tallyme-idp
+  template:
+    metadata:
+      # pods' labal
+      labels:
+        app: tallyme-idp
+    spec:
+      enableServiceLinks: false
+      containers:
+      - name: tallyme-idp
+        image: tallyme-idp:dev
+        # Use local image built inside Minikube
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        env:
+        - name: TZ
+          value: "Asia/Tokyo"
+        # Tomcat specific options
+        - name: CATALINA_OPTS
+          value: "-Duser.timezone=Asia/Tokyo"

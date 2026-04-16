@@ -1,5 +1,1 @@
-/redis/data
-
-/postgres/var/
-
-/web/var/log
+.DS_Store
