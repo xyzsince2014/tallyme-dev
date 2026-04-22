@@ -1,7 +1,7 @@
 # ============================================================================
 # .PHONY: Declare targets not associated with files
 # ============================================================================
-.PHONY: setup build deploy up stop delete psql
+.PHONY: setup deploy up stop delete psql
 
 # ****** Infrastructure Setup ******
 setup:
@@ -20,28 +20,22 @@ setup:
 	done
 
 	@echo "⌛  Waiting for Ingress Controller to be ready..."
+	@sleep 10
 	@kubectl wait --namespace ingress-nginx \
 	  --for=condition=ready pod \
 	  --selector=app.kubernetes.io/component=controller \
-	  --timeout=90s >/dev/null 2>&1 || true
+	  --timeout=120s
 
 	@echo "🌟  Infrastructure is ready!"
 
 # ****** Build & Deploy ******
-# Execute Docker build inside the Minikube environment
-build:
-	./postgres/docker-build.sh
-
 # Provision k8s resources
 deploy:
-	./postgres/create-configmap.sh
-	kubectl apply -f ./postgres/
-	kubectl apply -f ./redis/
-	kubectl apply -f ./idp/
-	kubectl apply -f ./resource/
+	./scripts/postgres/create-configmap.sh
+	kubectl apply -f ./manifests/
 
 # ****** Orchestrate ******
-up: setup build deploy
+up: setup deploy
 	@echo "✅  Done."
 
 # ****** Clean Up ******
@@ -58,4 +52,4 @@ delete:
 # ****** Misc ******
 # Quick access to the DB
 psql:
-	./postgres/psql.sh
+	./scripts/postgres/psql.sh
