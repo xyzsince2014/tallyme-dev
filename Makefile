@@ -1,9 +1,32 @@
-# ============================================================================
-# .PHONY: Declare targets not associated with files
-# ============================================================================
-.PHONY: setup deploy up stop delete psql
+.PHONY: colima hosts psql setup apply stop destroy deploy
 
-# ****** Infrastructure Setup ******
+# ----------------------------
+# 🚀 Setup
+# ----------------------------
+colima:
+	@echo "🐳 Starting Colima..."
+	./scripts/setup/colima-start.sh
+
+hosts:
+	@echo "🌐 Configuring local DNS..."
+	./scripts/setup/hosts.sh
+
+# ----------------------------
+# 🐘 Postgres
+# ----------------------------
+psql:
+	./scripts/postgres/psql.sh
+
+# ----------------------------
+# 📦 Application Deployment
+# ----------------------------
+deploy:
+	./scripts/postgres/create-configmap.sh
+	kubectl apply -f ./manifests/
+
+# ----------------------------
+# ☁️ Minikube
+# ----------------------------
 setup:
 	@echo "🚀  Starting Minikube..."
 	minikube start --driver=docker --cpus=4 --memory=3072
@@ -28,28 +51,15 @@ setup:
 
 	@echo "🌟  Infrastructure is ready!"
 
-# ****** Build & Deploy ******
-# Provision k8s resources
-deploy:
-	./scripts/postgres/create-configmap.sh
-	kubectl apply -f ./manifests/
-
-# ****** Orchestrate ******
-up: setup deploy
+apply: setup deploy
 	@echo "✅  Done."
 
-# ****** Clean Up ******
 stop:
 	@echo "⌛ Stopping Minikube cluster..."
 	minikube stop
 	@echo "✅  Minikube stopped."
 
-delete:
+destroy:
 	@echo "⚠️  WARNING: Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
 	minikube delete
 	@echo "✅  Deleted."
-
-# ****** Misc ******
-# Quick access to the DB
-psql:
-	./scripts/postgres/psql.sh
