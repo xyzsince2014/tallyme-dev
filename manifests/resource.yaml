@@ -42,3 +42,37 @@ spec:
           value: "dev_user"
         - name: DB_PASSWORD
           value: "dev_password"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tallyme-resource-service
+spec:
+  selector:
+    app: tallyme-resource
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tallyme-resource-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+  - hosts:
+    - tallyme-resource.localhost
+  rules:
+  - host: tallyme-resource.localhost
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tallyme-resource-service
+            port:
+              number: 8081

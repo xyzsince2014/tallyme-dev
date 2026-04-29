@@ -1,9 +1,32 @@
-# ============================================================================
-# .PHONY: Declare targets not associated with files
-# ============================================================================
-.PHONY: setup build deploy up stop delete psql
+.PHONY: colima hosts psql setup apply stop destroy deploy
 
-# ****** Infrastructure Setup ******
+# ----------------------------
+# 🚀 Setup
+# ----------------------------
+colima:
+	@echo "🐳 Starting Colima..."
+	./scripts/setup/colima-start.sh
+
+hosts:
+	@echo "🌐 Configuring local DNS..."
+	./scripts/setup/hosts.sh
+
+# ----------------------------
+# 🐘 Postgres
+# ----------------------------
+psql:
+	./scripts/postgres/psql.sh
+
+# ----------------------------
+# 📦 Application Deployment
+# ----------------------------
+deploy:
+	./scripts/postgres/create-configmap.sh
+	kubectl apply -f ./manifests/
+
+# ----------------------------
+# ☁️ Minikube
+# ----------------------------
 setup:
 	@echo "🚀  Starting Minikube..."
 	minikube start --driver=docker --cpus=4 --memory=3072
@@ -20,42 +43,23 @@ setup:
 	done
 
 	@echo "⌛  Waiting for Ingress Controller to be ready..."
+	@sleep 10
 	@kubectl wait --namespace ingress-nginx \
 	  --for=condition=ready pod \
 	  --selector=app.kubernetes.io/component=controller \
-	  --timeout=90s >/dev/null 2>&1 || true
+	  --timeout=120s
 
 	@echo "🌟  Infrastructure is ready!"
 
-# ****** Build & Deploy ******
-# Execute Docker build inside the Minikube environment
-build:
-	./postgres/docker-build.sh
-
-# Provision k8s resources
-deploy:
-	./postgres/create-configmap.sh
-	kubectl apply -f ./postgres/
-	kubectl apply -f ./redis/
-	kubectl apply -f ./idp/
-	kubectl apply -f ./resource/
-
-# ****** Orchestrate ******
-up: setup build deploy
+apply: setup deploy
 	@echo "✅  Done."
 
-# ****** Clean Up ******
 stop:
 	@echo "⌛ Stopping Minikube cluster..."
 	minikube stop
 	@echo "✅  Minikube stopped."
 
-delete:
+destroy:
 	@echo "⚠️  WARNING: Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
 	minikube delete
 	@echo "✅  Deleted."
-
-# ****** Misc ******
-# Quick access to the DB
-psql:
-	./postgres/psql.sh
