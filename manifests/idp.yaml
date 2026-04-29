@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+# deplyment's name
+metadata:
+  name: tallyme-idp
+spec:
+  replicas: 1
+  selector:
+    # target the deployment manages
+    matchLabels:
+      app: tallyme-idp
+  template:
+    metadata:
+      # pods' labal
+      labels:
+        app: tallyme-idp
+    spec:
+      enableServiceLinks: false
+      containers:
+      - name: tallyme-idp
+        image: tallyme-idp:dev
+        imagePullPolicy: Never # use local image built inside Minikube
+        ports:
+        - containerPort: 8080
+        env:
+        - name: TZ
+          value: "Asia/Tokyo"
+        # Tomcat specific options
+        - name: CATALINA_OPTS
+          value: "-Duser.timezone=Asia/Tokyo"
+        # Postgres
+        - name: DB_HOST
+          value: "postgres"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_DATABASE
+          value: "tallyme"
+        - name: DB_USER
+          value: "dev_user"
+        - name: DB_PASSWORD
+          value: "dev_password"
+        # Redis
+        - name: REDIS_HOST
+          value: "redis"
+        - name: REDIS_PORT
+          value: "6379"
+        # Application
+        - name: DOMAIN_IDP
+          value: "https://tallyme-idp.localhost"
+        - name: DOMAIN_RESOURCE
+          value: "https://tallyme-resource.localhost"
+        - name: ADMIN_USERNAME
+          value: "admin"
+        - name: ADMIN_PASSWORD
+          value: "password"
+        - name: REGISTRATION_ENDPOINT
+          value: "https://tallyme-idp.localhost/api/v1/register"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tallyme-idp-service # service's name
+spec:
+  selector:
+    app: tallyme-idp # deployment's name
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tallyme-idp-ingress
+  annotations:
+    # force http requests to redirect to https
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  # enable https for the specified host using Minikube's fake certificate
+  tls:
+  - hosts:
+    - tallyme-idp.localhost
+  rules:
+  - host: tallyme-idp.localhost
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tallyme-idp-service # service's name
+            port:
+              number: 8080

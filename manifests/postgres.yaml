@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      enableServiceLinks: false
+      containers:
+      - name: postgres
+        image: postgres:14
+        ports:
+        - containerPort: 5432
+        env:
+        - name: TZ
+          value: "Asia/Tokyo"
+        - name: POSTGRES_DB
+          value: "tallyme"
+        - name: POSTGRES_PASSWORD
+          value: "postgres"
+        # mapping internal paths to external volumes
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data # where postgres saves data
+        - name: init-scripts
+          mountPath: /docker-entrypoint-initdb.d # where initialization SQLs go
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc # connect to the "Storage Reservation" above
+      - name: init-scripts
+        configMap:
+          name: postgres-init-sql # connect to the ConfigMap containing your SQLs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432 # external port for the cluster
+      targetPort: 5432 # internal port on the container
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce # only one node can write to this disk at a time
+  resources:
+    requests:
+      storage: 1Gi # requesting 1GB of persistent storage
